@@ -10,8 +10,8 @@ GraphNode::~GraphNode()
 {
     //// STUDENT CODE
     ////
-
-    delete _chatBot; 
+    //It should not delete chatbot, as no memory is allocated using new for chatbot in GraphNode
+    //delete _chatBot; 
 
     ////
     //// EOF STUDENT CODE
