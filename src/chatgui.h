@@ -18,7 +18,7 @@ private:
 
     //ChatLogic *_chatLogic;
     // Converted _chatLogic from above raw to unique pointer below
-    std::unique_ptr<ChatLogic> _chatLogic = std::make_unique<ChatLogic>(); 
+    std::unique_ptr<ChatLogic> _chatLogic; 
     
 
     ////
