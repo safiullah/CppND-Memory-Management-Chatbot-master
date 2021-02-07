@@ -45,6 +45,70 @@ ChatBot::~ChatBot()
 //// STUDENT CODE
 ////
 
+// Copy constructor
+ChatBot::ChatBot(const ChatBot & source)
+{
+    std::cout << "ChatBot Copy Constructor" << std::endl;
+    // Calling the copy constructor of wxbitmap. As per wiki of wxWidgets
+    // https://docs.wxwidgets.org/3.1/classwx_bitmap.html#abfaa21ec563a64ea913af918150db900
+    //_image = new wxBitmap(*source._image );
+    //_image = new wxBitmap(const &source._image, wxBITMAP_TYPE_PNG);
+    *_image = *source._image; 
+}
+
+// Copy Assignment operator
+ChatBot & ChatBot::operator=(const ChatBot & source)
+{
+    if(this == &source)
+        return *this;
+
+    std::cout << "ChatBot Copy Assignment Operator" << std::endl;
+
+    // deallocate heap memory
+    if(_image != NULL) // Attention: wxWidgets used NULL and not nullptr
+    {
+        delete _image;
+        _image = NULL;
+    }
+
+    // Calling the copy constructor of wxbitmap. As per wiki of wxWidgets
+    // https://docs.wxwidgets.org/3.1/classwx_bitmap.html#abfaa21ec563a64ea913af918150db900
+    
+    *_image = *source._image;
+
+    return *this;
+}
+
+// Move Constructor
+ChatBot::ChatBot(ChatBot && source) 
+{
+    std::cout << "ChatBot Move Constructor" << std::endl;
+    _image = source._image;
+    source._image = NULL;
+}
+
+// Move assignment operator
+ChatBot & ChatBot::operator=(ChatBot && source)
+{
+    std::cout << "ChatBot Move Assignment Operator" << std::endl;
+
+    if(this == &source)
+        return *this;
+
+    // deallocate heap memory
+    if(_image != NULL) // Attention: wxWidgets used NULL and not nullptr
+    {
+        delete _image;
+        _image = NULL;
+    }
+
+    _image = source._image;
+    source._image = NULL;
+
+    return *this;
+} 
+/*
+*/
 ////
 //// EOF STUDENT CODE
 
