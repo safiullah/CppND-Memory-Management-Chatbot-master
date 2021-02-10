@@ -17,3 +17,6 @@ In file chatbot.h / chatbot.cpp, changes are made to the class ChatBot such
 # Task 3 : Exclusive Ownership 2
 In file chatlogic.h / chatlogic.cpp, adapt the vector _nodes in a way that the instances of GraphNodes to which the vector elements refer are exclusively owned by the class ChatLogic. Use an appropriate type of smart pointer to achieve this. Where required, make changes to the code such that data structures and function parameters reflect the changes. When passing the GraphNode instances to functions, make sure to not transfer ownership and try to contain the changes to class ChatLogic where possible. 
 
+# Task 4 : Moving Smart Pointers
+
+In files chatlogic.h / chatlogic.cpp and graphnodes.h / graphnodes.cpp change the ownership of all instances of GraphEdge in a way such that each instance of GraphNode exclusively owns the outgoing GraphEdges and holds non-owning references to incoming GraphEdges. Use appropriate smart pointers and where required, make changes to the code such that data structures and function parameters reflect the changes. When transferring ownership from class ChatLogic, where all instances of GraphEdge are created, into instances of GraphNode, make sure to use move semantics. 
