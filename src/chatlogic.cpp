@@ -35,18 +35,20 @@ ChatLogic::~ChatLogic()
     // delete chatbot instance
     delete _chatBot;
 
+    /* No Need to delete all nodes and edges as they are smart pointers now and automatically managed
+
     // delete all nodes
     for (auto it = std::begin(_nodes); it != std::end(_nodes); ++it)
     {
         delete *it;
     }
-
+    */
     // delete all edges
     for (auto it = std::begin(_edges); it != std::end(_edges); ++it)
     {
         delete *it;
     }
-
+    
     ////
     //// EOF STUDENT CODE
 }
@@ -127,16 +129,18 @@ void ChatLogic::LoadAnswerGraphFromFile(std::string filename)
                         ////
 
                         // check if node with this ID exists already
-                        auto newNode = std::find_if(_nodes.begin(), _nodes.end(), [&id](GraphNode *node) { return node->GetID() == id; });
-
+                        //auto newNode = std::find_if(_nodes.begin(), _nodes.end(), [&id](GraphNode *node) { return node->GetID() == id; });
+                        auto newNode = std::find_if(_nodes.begin(), _nodes.end(), [&id](std::shared_ptr<GraphNode> node) { return node->GetID() == id; });
                         // create new element if ID does not yet exist
                         if (newNode == _nodes.end())
                         {
-                            _nodes.emplace_back(new GraphNode(id));
+                            //_nodes.emplace_back(new GraphNode(id));
+                            _nodes.emplace_back(std::make_shared<GraphNode>(id));
                             newNode = _nodes.end() - 1; // get iterator to last element
 
                             // add all answers to current node
-                            AddAllTokensToElement("ANSWER", tokens, **newNode);
+                            //AddAllTokensToElement("ANSWER", tokens, **newNode);
+                            AddAllTokensToElement("ANSWER", tokens, *(newNode->get()));
                         }
 
                         ////
@@ -156,21 +160,34 @@ void ChatLogic::LoadAnswerGraphFromFile(std::string filename)
                         if (parentToken != tokens.end() && childToken != tokens.end())
                         {
                             // get iterator on incoming and outgoing node via ID search
-                            auto parentNode = std::find_if(_nodes.begin(), _nodes.end(), [&parentToken](GraphNode *node) { return node->GetID() == std::stoi(parentToken->second); });
-                            auto childNode = std::find_if(_nodes.begin(), _nodes.end(), [&childToken](GraphNode *node) { return node->GetID() == std::stoi(childToken->second); });
+                            //auto parentNode = std::find_if(_nodes.begin(), _nodes.end(), [&parentToken](GraphNode *node) { return node->GetID() == std::stoi(parentToken->second); });
+                            auto parentNode = std::find_if(_nodes.begin(), _nodes.end(), [&parentToken](std::shared_ptr<GraphNode> node) { return node->GetID() == std::stoi(parentToken->second); });
+                            //auto childNode = std::find_if(_nodes.begin(), _nodes.end(), [&childToken](GraphNode *node) { return node->GetID() == std::stoi(childToken->second); });
+                            auto childNode = std::find_if(_nodes.begin(), _nodes.end(), [&childToken](std::shared_ptr<GraphNode> node) { return node->GetID() == std::stoi(childToken->second); });
 
                             // create new edge
                             GraphEdge *edge = new GraphEdge(id);
-                            edge->SetChildNode(*childNode);
-                            edge->SetParentNode(*parentNode);
+                            //std::shared_ptr<GraphEdge> edge = std::make_shared<GraphEdge>(id); // Initialize a unique pointer instead of raw
+                            //edge->SetChildNode(*childNode);
+                            //edge->SetChildNode(childNode->get()); // Passing original pointer 
+                            edge->SetChildNode(childNode->get()); // edge is raw and node is smart pointer
+                            
+                            //edge->SetParentNode(*parentNode);
+                            //edge->SetParentNode(parentNode->get()); // Passing original pointer
+                            edge->SetParentNode(parentNode->get()); // edge is raw and node is smart pointer
                             _edges.push_back(edge);
 
                             // find all keywords for current node
                             AddAllTokensToElement("KEYWORD", tokens, *edge);
+                            //AddAllTokensToElement("KEYWORD", tokens, *edge.get()); // Pass Element pointed by raw pointer
 
                             // store reference in child node and parent node
-                            (*childNode)->AddEdgeToParentNode(edge);
-                            (*parentNode)->AddEdgeToChildNode(edge);
+                            //(*childNode)->AddEdgeToParentNode(edge);
+                            //(childNode->get())->AddEdgeToParentNode(edge.get()); // both edge and node are smart pointers
+                            (childNode->get())->AddEdgeToParentNode(edge); // node is smart pointer and edge is not
+                            //(*parentNode)->AddEdgeToChildNode(edge);
+                            //(parentNode->get())->AddEdgeToChildNode(edge.get()); // both edge and node are smart pointers
+                            (parentNode->get())->AddEdgeToChildNode(edge);
                         }
 
                         ////
@@ -198,6 +215,7 @@ void ChatLogic::LoadAnswerGraphFromFile(std::string filename)
 
     // identify root node
     GraphNode *rootNode = nullptr;
+    //std::unique_ptr<GraphNode> rootNode; // Unique pointer instead of raw pointer
     for (auto it = std::begin(_nodes); it != std::end(_nodes); ++it)
     {
         // search for nodes which have no incoming edges
@@ -206,7 +224,8 @@ void ChatLogic::LoadAnswerGraphFromFile(std::string filename)
 
             if (rootNode == nullptr)
             {
-                rootNode = *it; // assign current node to root
+                //rootNode = *it; // assign current node to root
+                rootNode = it->get();
             }
             else
             {
