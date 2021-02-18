@@ -18,7 +18,7 @@ private:
 
     // data handles (owned)
     //std::vector<GraphNode *> _nodes;
-    std::vector<GraphEdge *> _edges;
+    //std::vector<GraphEdge *> _edges; // No Need of this vector of edges because graphnode exclusively own edge pointers
     std::vector<std::shared_ptr<GraphNode>> _nodes; // Convetted the graphnode element from raw to unique pointer
     //std::vector<std::shared_ptr<GraphEdge>> _edges; // Converted the graphedge element from raw to unique pointer
 

@@ -136,7 +136,7 @@ ChatBotPanelDialog::~ChatBotPanelDialog()
     //// STUDENT CODE
     ////
 
-    // No need to delete _chatLogic pointer as it is a unique pointer as automatically managed
+    // No need to delete _chatLogic pointer as it is a unique pointer and automatically managed
     //delete _chatLogic;
 
     ////

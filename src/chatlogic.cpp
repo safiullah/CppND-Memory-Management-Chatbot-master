@@ -42,13 +42,14 @@ ChatLogic::~ChatLogic()
     {
         delete *it;
     }
-    */
+    
+   // Comment it as it is not needed in chatlogic class
     // delete all edges
     for (auto it = std::begin(_edges); it != std::end(_edges); ++it)
     {
         delete *it;
     }
-    
+    */
     ////
     //// EOF STUDENT CODE
 }
@@ -166,8 +167,8 @@ void ChatLogic::LoadAnswerGraphFromFile(std::string filename)
                             auto childNode = std::find_if(_nodes.begin(), _nodes.end(), [&childToken](std::shared_ptr<GraphNode> node) { return node->GetID() == std::stoi(childToken->second); });
 
                             // create new edge
-                            GraphEdge *edge = new GraphEdge(id);
-                            //std::shared_ptr<GraphEdge> edge = std::make_shared<GraphEdge>(id); // Initialize a unique pointer instead of raw
+                            //GraphEdge *edge = new GraphEdge(id);
+                            std::unique_ptr<GraphEdge> edge = std::make_unique<GraphEdge>(id); // Initialize a unique pointer instead of raw
                             //edge->SetChildNode(*childNode);
                             //edge->SetChildNode(childNode->get()); // Passing original pointer 
                             edge->SetChildNode(childNode->get()); // edge is raw and node is smart pointer
@@ -175,7 +176,7 @@ void ChatLogic::LoadAnswerGraphFromFile(std::string filename)
                             //edge->SetParentNode(*parentNode);
                             //edge->SetParentNode(parentNode->get()); // Passing original pointer
                             edge->SetParentNode(parentNode->get()); // edge is raw and node is smart pointer
-                            _edges.push_back(edge);
+                            //_edges.push_back(edge.get()); // My understanding is we do not need this vector.
 
                             // find all keywords for current node
                             AddAllTokensToElement("KEYWORD", tokens, *edge);
@@ -184,10 +185,12 @@ void ChatLogic::LoadAnswerGraphFromFile(std::string filename)
                             // store reference in child node and parent node
                             //(*childNode)->AddEdgeToParentNode(edge);
                             //(childNode->get())->AddEdgeToParentNode(edge.get()); // both edge and node are smart pointers
-                            (childNode->get())->AddEdgeToParentNode(edge); // node is smart pointer and edge is not
+                            //(childNode->get())->AddEdgeToParentNode(edge); // node is smart pointer and edge is not
+                            (childNode->get())->AddEdgeToParentNode(edge.get()); // adjusted when edge declared as unique pointer
                             //(*parentNode)->AddEdgeToChildNode(edge);
                             //(parentNode->get())->AddEdgeToChildNode(edge.get()); // both edge and node are smart pointers
-                            (parentNode->get())->AddEdgeToChildNode(edge);
+                            //(parentNode->get())->AddEdgeToChildNode(edge);
+                            (parentNode->get())->AddEdgeToChildNode(std::move(edge)); // Moving ownership to Node
                         }
 
                         ////
