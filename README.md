@@ -34,3 +34,82 @@ ChatBot Move Assignment Operator
 ChatBot Destructor
 
 ChatBot Destructor 
+
+
+# Launch.json file settings to be used for VSCode
+
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "g++ - Build and debug active file",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/debug/membot",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}/debug",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "C/C++: g++ build active file",
+            "miDebuggerPath": "/usr/bin/gdb"
+        }
+    ]
+}
+
+# Tasks.json file settings to be used for VSCode
+
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "C/C++: g++ build active file",
+            "command": "cd debug && cmake -DCMAKE_BUILD_TYPE=Debug .. && make",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        }
+    ],
+    "version": "2.0.0"
+}
+
+# cpp_properties.json settings for VSCode
+
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${default}",
+                "/usr/include/wx-3.0/wx",
+                "/usr/include"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc-7",
+            "intelliSenseMode": "clang-x64",
+            "cStandard": "c11",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
+}
+
+# setting.json 
+
+ "terminal.integrated.automationShell.linux": "/bin/bash",
+    "terminal.integrated.env.linux": {
+        "CXX":"g++-7",
+        "CXXFLAGS":"-std=c++17 -g"
+    },
+    
